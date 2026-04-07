@@ -9,6 +9,11 @@ DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'weat
 
 def init_database():
     """初始化数据库表"""
+    # 确保data文件夹存在
+    data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
