@@ -11,3 +11,6 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "uvicorn>=0.44.0",
 ]
+
+[tool.uv.sources.pypi]
+url = "https://mirrors.ustc.edu.cn/pypi/simple"
