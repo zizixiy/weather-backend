@@ -1,5 +1,5 @@
 import httpx
-from config import BAIDU_MAP_AK, BAIDU_MAP_COOR, BAIDU_MAP_IP_URL
+from config import BAIDU_MAP_AK, BAIDU_MAP_COOR, BAIDU_MAP_IP_URL, BAIDU_MAP_REVERSE_GEO_URL
 
 async def get_location_by_ip(ip: str) -> dict:
     """通过IP地址获取地理位置信息"""
@@ -48,4 +48,43 @@ async def get_location_by_ip(ip: str) -> dict:
                 'district': '东城区',
                 'street': '',
                 'address': '北京市东城区'
+            }
+
+
+async def get_location_by_coordinates(longitude: str, latitude: str) -> dict:
+    """通过经纬度获取地理位置信息（逆地理编码）"""
+    params = {
+        'ak': BAIDU_MAP_AK,
+        'output': 'json',
+        'coordtype': 'wgs84ll',
+        'location': f'{latitude},{longitude}'
+    }
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(BAIDU_MAP_REVERSE_GEO_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+        
+        if data.get('status') == 0:
+            result = data.get('result', {})
+            address_component = result.get('addressComponent', {})
+            location = {
+                'latitude': latitude,
+                'longitude': longitude,
+                'city': address_component.get('city'),
+                'district': address_component.get('district'),
+                'street': address_component.get('street'),
+                'address': result.get('formatted_address')
+            }
+            return location
+        else:
+            # 如果API调用失败，返回包含经纬度的基本信息
+            return {
+                'latitude': latitude,
+                'longitude': longitude,
+                'city': None,
+                'district': None,
+                'street': None,
+                'address': None,
+                'error': '无法获取地理位置信息'
             }
