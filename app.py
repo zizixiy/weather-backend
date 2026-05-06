@@ -321,7 +321,7 @@ async def get_weather_by_coordinates_json(
     return comprehensive_data
 
 
-@app.get("/location/by-coordinates")
+@app.get("/weather/coordinates2address")
 async def get_location_only(longitude: str, latitude: str):
     """通过经纬度仅获取地理位置信息（不含天气）"""
     # 通过经纬度获取地理位置
