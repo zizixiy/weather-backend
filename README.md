@@ -42,3 +42,4 @@ uv run main.py
 - Python 3.13+
 - SQLite
 - httpx
+
